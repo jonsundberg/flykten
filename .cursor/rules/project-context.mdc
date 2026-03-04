@@ -1,0 +1,13 @@
+---
+description: Flykten-projektets kontext och principer (Kiro, enkelhet, svenska)
+alwaysApply: true
+---
+
+# Flykten – Projektkontext
+
+- **Projektet:** Statisk bandhemsida + arkiv för bandet Flykten. Ingen CMS, ingen databas, ingen backend.
+- **Kiro:** Krav och design ligger i `.kiro/specs/flykten-band-website-monorepo/` (`requirements.md`, `design.md`, `tasks.md`). Följ dem vid osäkerhet.
+- **Struktur:** `apps/web` (Astro), `packages/content` (markdown), `packages/brand` (CSS), `tools/mcp-flykten` (valfritt).
+- **Principer:** Bygg så lite som möjligt. Content först, design sekundärt. Undvik enterprise-lösningar och onödiga abstraktioner.
+- **Språk:** UI och innehåll på svenska (Hem, Musik, Live, Press, alt-texter, meddelanden).
+- **AGENTS.md:** Läs för full översikt och nästa steg enligt tasks.md.

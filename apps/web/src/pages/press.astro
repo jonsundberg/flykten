@@ -1,0 +1,118 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
+
+const pressEntries = await getCollection('press');
+const bioShort = pressEntries.find(e => e.slug === 'bio.short');
+const bioMedium = pressEntries.find(e => e.slug === 'bio.medium');
+const bioLong = pressEntries.find(e => e.slug === 'bio.long');
+
+const shortRendered = bioShort ? await bioShort.render() : null;
+const mediumRendered = bioMedium ? await bioMedium.render() : null;
+const longRendered = bioLong ? await bioLong.render() : null;
+const ShortBio = shortRendered?.Content;
+const MediumBio = mediumRendered?.Content;
+const LongBio = longRendered?.Content;
+
+const contactPath = join(process.cwd(), '../../packages/content/contact.md');
+const contactText = await readFile(contactPath, 'utf-8');
+const frontmatterMatch = contactText.match(/^---\n([\s\S]*?)\n---/);
+let email = 'contact@flykten.se';
+let booking = 'booking@flykten.se';
+if (frontmatterMatch) {
+  const emailMatch = frontmatterMatch[1].match(/email:\s*(.+)/);
+  const bookingMatch = frontmatterMatch[1].match(/booking:\s*(.+)/);
+  if (emailMatch) email = emailMatch[1].trim();
+  if (bookingMatch) booking = bookingMatch[1].trim();
+}
+const contactBody = contactText.replace(/^---[\s\S]*?---\n/, '');
+---
+
+<BaseLayout title="Press – Flykten">
+  <h1 class="page-title">Press</h1>
+
+  <section>
+    <h2>Bio</h2>
+
+    {ShortBio && bioShort && (
+      <article class="bio section-card">
+        <h3>{bioShort.data.title}</h3>
+        <div class="bio-content">
+          <ShortBio />
+        </div>
+      </article>
+    )}
+
+    {MediumBio && bioMedium && (
+      <article class="bio section-card">
+        <h3>{bioMedium.data.title}</h3>
+        <div class="bio-content">
+          <MediumBio />
+        </div>
+      </article>
+    )}
+
+    {LongBio && bioLong && (
+      <article class="bio section-card">
+        <h3>{bioLong.data.title}</h3>
+        <div class="bio-content">
+          <LongBio />
+        </div>
+      </article>
+    )}
+  </section>
+
+  <section>
+    <h2>Pressbilder</h2>
+    <p>Pressbilder kommer snart. Kontakta oss för högupplösta bilder.</p>
+  </section>
+
+  <section>
+    <h2>Kontakt</h2>
+    <div class="contact-content" set:html={contactBody} />
+  </section>
+
+  <style>
+    section {
+      margin-bottom: var(--space-xl);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: var(--space-lg);
+    }
+
+    section:last-child {
+      border-bottom: none;
+    }
+
+    section h2 {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: var(--text-muted);
+      margin-bottom: var(--space-md);
+    }
+
+    .bio {
+      margin-bottom: var(--space-md);
+    }
+
+    .bio h3 {
+      margin-top: 0;
+    }
+
+    .bio-content,
+    .contact-content {
+      line-height: 1.6;
+    }
+
+    .bio-content :global(p) {
+      margin: 0 0 var(--space-sm) 0;
+    }
+
+    .contact-content :global(a) {
+      color: var(--accent);
+    }
+  </style>
+</BaseLayout>

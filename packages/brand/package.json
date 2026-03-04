@@ -1,0 +1,6 @@
+{
+  "name": "brand",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Design tokens and CSS for Flykten band website"
+}

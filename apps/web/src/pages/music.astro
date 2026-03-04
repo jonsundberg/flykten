@@ -1,0 +1,105 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+function getSpotifyEmbed(spotifyUrl: string | undefined): { type: 'album' | 'track'; id: string } | null {
+  if (!spotifyUrl || typeof spotifyUrl !== 'string') return null;
+  const albumMatch = spotifyUrl.match(/spotify\.com\/album\/([a-zA-Z0-9]+)/);
+  const trackMatch = spotifyUrl.match(/spotify\.com\/track\/([a-zA-Z0-9]+)/);
+  if (albumMatch?.[1] && albumMatch[1] !== 'example' && albumMatch[1].length >= 10) {
+    return { type: 'album', id: albumMatch[1] };
+  }
+  if (trackMatch?.[1]) return { type: 'track', id: trackMatch[1] };
+  return null;
+}
+
+const releases = await getCollection('releases');
+const sortedReleases = releases.sort((a, b) =>
+  new Date(b.data.releaseDate).getTime() - new Date(a.data.releaseDate).getTime()
+);
+---
+
+<BaseLayout title="Musik – Flykten">
+  <h1 class="page-title">Musik</h1>
+
+  <div class="releases">
+    {sortedReleases.map((release) => (
+      <article class="release section-card">
+        <h2><a href={`/releases/${release.slug}`}>{release.data.title}</a></h2>
+        <p class="meta">{release.data.type} – {release.data.releaseDate}</p>
+        
+        {release.data.links && (
+          <div class="links">
+            {release.data.links.spotify && (
+              <a href={release.data.links.spotify} class="primary-link">Lyssna på Spotify</a>
+            )}
+            {release.data.links.youtube && (
+              <a href={release.data.links.youtube}>YouTube</a>
+            )}
+          </div>
+        )}
+
+        {getSpotifyEmbed(release.data.links?.spotify) && (() => {
+          const embed = getSpotifyEmbed(release.data.links!.spotify)!;
+          return (
+            <div class="embed">
+              <iframe
+                src={`https://open.spotify.com/embed/${embed.type}/${embed.id}`}
+                width="100%"
+                height="152"
+                frameborder="0"
+                allowtransparency="true"
+                allow="encrypted-media"
+                title={`Spotify player för ${release.data.title}`}
+              />
+            </div>
+          );
+        })()}
+      </article>
+    ))}
+  </div>
+
+  <style>
+    .releases {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .release h2 {
+      margin-top: 0;
+      font-size: 1.25rem;
+    }
+
+    .release h2 a {
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .release h2 a:hover {
+      color: var(--accent);
+    }
+
+    .meta {
+      color: var(--text-muted);
+      margin: 0 0 var(--space-sm) 0;
+      font-size: 0.9rem;
+    }
+
+    .links {
+      display: flex;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-md);
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .links .primary-link {
+      font-weight: bold;
+    }
+
+    .embed {
+      margin-top: var(--space-md);
+    }
+  </style>
+</BaseLayout>

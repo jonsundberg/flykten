@@ -1,0 +1,46 @@
+/* Flykten Brand Tokens – Revolutionen EP style */
+
+:root {
+  /* Colors – EP palette (dark base, accent red) */
+  --bg: #0a0a0a;
+  --bg-secondary: #1a1a1a;
+  --text: #f5f5f0;
+  --text-muted: #8a8a8a;
+  --accent: #d71920;
+  --border: #333333;
+
+  /* Typography – match branding guide */
+  --font-display: "Staatliches", "Impact", sans-serif;
+  --font-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  --font-mono: "Space Mono", "Courier New", monospace;
+
+  /* Spacing */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+}
+
+/* Base styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-base);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+a:hover {
+  text-decoration: none;
+}

@@ -1,0 +1,16 @@
+---
+description: Styling med brand-paketet – tokens och Revolutionen EP-stil
+globs: "packages/brand/**/*.css,**/*.astro"
+alwaysApply: false
+---
+
+# Brand och CSS
+
+- All styling via **packages/brand**. Webbappen importerar `brand/tokens.css` i layout.
+- **EP-stil:** Mörk bakgrund (`--bg`), ljus text (`--text`), accent röd `#d71920` (`--accent`). Se `packages/brand/BRANDING.md` och `tokens.css`.
+- **Typsnitt:** `--font-display` (Staatliches, rubriker), `--font-mono` (Space Mono). Google Fonts laddas i BaseLayout.
+- **tokens.css:** `--bg`, `--text`, `--accent`, `--border`, `--font-display`, `--font-base`, `--font-mono`, `--space-*`. Ingen Tailwind, ingen CSS-processor.
+- **retro.css** (när den finns): tabell-layout, borders, länkstilar, minimal hover. Retro är estetiskt, inte tekniskt krav överallt.
+- I `.astro`-filer: använd `var(--token)`; undvik inline-stilar. Responsivitet ska bevara EP/retro-känslan.
+- Aktiva nav-länkar: `aria-current="page"` + `color: var(--accent)`.
+- Referensbilder för EP: `apps/web/public/images/brand/` (ep-background, typeface-sample, branding-guide).

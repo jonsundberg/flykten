@@ -1,0 +1,20 @@
+{
+  "name": "flykten-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Flykten band website monorepo",
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "preview": "pnpm --filter web preview",
+    "fetch-spotify": "node scripts/fetch-spotify-releases.mjs"
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.5",
+    "gray-matter": "^4.0.3"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@9.0.0"
+}

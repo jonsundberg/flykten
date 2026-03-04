@@ -1,0 +1,152 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { marked } from 'marked';
+
+// Read gigs markdown file directly
+const gigsPath = join(process.cwd(), '../../packages/content/gigs/gigs.md');
+const gigsText = await readFile(gigsPath, 'utf-8');
+// Remove frontmatter
+const gigsBody = gigsText.replace(/^---[\s\S]*?---\n/, '');
+const gigRegex = /## (\d{4}-\d{2}-\d{2}) – (.+)/g;
+const gigs: Array<{ date: string; venue: string; content: string; imageHtml: string | null; bodyHtml: string }> = [];
+
+let match;
+let lastIndex = 0;
+const matches: Array<{ date: string; venue: string; index: number }> = [];
+
+while ((match = gigRegex.exec(gigsBody)) !== null) {
+  matches.push({
+    date: match[1],
+    venue: match[2],
+    index: match.index,
+  });
+}
+
+function parseGigContent(content: string): { imageHtml: string | null; bodyHtml: string } {
+  const imgMatch = content.match(/^(<img[^>]*\/?>)\s*/i);
+  if (!imgMatch) return { imageHtml: null, bodyHtml: content };
+  const bodyHtml = content.slice(imgMatch[0].length).trim();
+  return { imageHtml: imgMatch[1], bodyHtml };
+}
+
+matches.forEach((match, i) => {
+  const nextMatch = matches[i + 1];
+  const endIndex = nextMatch ? nextMatch.index : gigsBody.length;
+  const content = gigsBody.substring(match.index, endIndex).replace(/## \d{4}-\d{2}-\d{2} – .+\n/, '').trim();
+  const { imageHtml, bodyHtml } = parseGigContent(content);
+  gigs.push({
+    date: match.date,
+    venue: match.venue,
+    content,
+    imageHtml,
+    bodyHtml,
+  });
+});
+
+const now = new Date();
+const upcoming = gigs.filter(g => new Date(g.date) >= now).sort((a, b) => 
+  new Date(a.date).getTime() - new Date(b.date).getTime()
+);
+const past = gigs.filter(g => new Date(g.date) < now).sort((a, b) => 
+  new Date(b.date).getTime() - new Date(a.date).getTime()
+);
+---
+
+<BaseLayout title="Live – Flykten">
+  <h1 class="page-title">Live</h1>
+
+  <section>
+    <h2>Kommande spelningar</h2>
+    {upcoming.length === 0 ? (
+      <p>Inga kommande spelningar just nu. Håll utkik.</p>
+    ) : (
+      <div class="gigs">
+        {upcoming.map((gig) => (
+          <article class={`gig section-card ${gig.imageHtml ? 'gig-with-image' : ''}`}>
+            <h3>{gig.date} – {gig.venue}</h3>
+            {gig.imageHtml ? (
+              <div class="gig-grid">
+                <div class="gig-poster" set:html={gig.imageHtml} />
+                <div class="gig-body" set:html={marked.parse(gig.bodyHtml) as string} />
+              </div>
+            ) : (
+              <div class="gig-body" set:html={marked.parse(gig.content) as string} />
+            )}
+          </article>
+        ))}
+      </div>
+    )}
+  </section>
+
+  <section>
+    <h2>Tidigare spelningar</h2>
+    {past.length === 0 ? (
+      <p>Inga tidigare spelningar ännu.</p>
+    ) : (
+      <div class="gigs">
+        {past.map((gig) => (
+          <article class={`gig section-card ${gig.imageHtml ? 'gig-with-image' : ''}`}>
+            <h3>{gig.date} – {gig.venue}</h3>
+            {gig.imageHtml ? (
+              <div class="gig-grid">
+                <div class="gig-poster" set:html={gig.imageHtml} />
+                <div class="gig-body" set:html={marked.parse(gig.bodyHtml) as string} />
+              </div>
+            ) : (
+              <div class="gig-body" set:html={marked.parse(gig.content) as string} />
+            )}
+          </article>
+        ))}
+      </div>
+    )}
+  </section>
+
+  <style>
+    section {
+      margin-bottom: var(--space-xl);
+    }
+
+    section h2 {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: var(--text-muted);
+      margin-bottom: var(--space-md);
+    }
+
+    .gigs {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .gig h3 {
+      margin-top: 0;
+      font-family: var(--font-mono);
+      font-size: 1rem;
+    }
+
+    .gig-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 280px) 1fr;
+      gap: var(--space-lg);
+      align-items: start;
+    }
+
+    .gig-poster :global(img) {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 2px;
+    }
+
+    @media (max-width: 600px) {
+      .gig-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</BaseLayout>

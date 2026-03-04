@@ -1,0 +1,180 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+function getSpotifyEmbed(spotifyUrl: string | undefined): { type: 'album' | 'track'; id: string } | null {
+  if (!spotifyUrl || typeof spotifyUrl !== 'string') return null;
+  const albumMatch = spotifyUrl.match(/spotify\.com\/album\/([a-zA-Z0-9]+)/);
+  const trackMatch = spotifyUrl.match(/spotify\.com\/track\/([a-zA-Z0-9]+)/);
+  if (albumMatch?.[1] && albumMatch[1] !== 'example' && albumMatch[1].length >= 10) {
+    return { type: 'album', id: albumMatch[1] };
+  }
+  if (trackMatch?.[1]) return { type: 'track', id: trackMatch[1] };
+  return null;
+}
+
+export async function getStaticPaths() {
+  const releases = await getCollection('releases');
+  return releases.map((release) => ({
+    params: { slug: release.slug },
+    props: { release },
+  }));
+}
+
+const { release } = Astro.props;
+const { Content } = await release.render();
+const spotifyEmbed = getSpotifyEmbed(release.data.links?.spotify);
+---
+
+<BaseLayout title={`${release.data.title} – Flykten`}>
+  <article>
+    <header>
+      <h1 class="page-title">{release.data.title}</h1>
+      <p class="meta">
+        {release.data.type} – {release.data.releaseDate}
+      </p>
+    </header>
+
+    {release.data.cover && (
+      <img 
+        src={release.data.cover} 
+        alt={`Omslag för ${release.data.title}`}
+        class="cover"
+      />
+    )}
+
+    <section class="description">
+      <Content />
+    </section>
+
+    {release.data.tracks && release.data.tracks.length > 0 && (
+      <section class="tracklist">
+        <h2>Låtar</h2>
+        <ol>
+          {release.data.tracks.map((track) => (
+            <li>{track.title}</li>
+          ))}
+        </ol>
+      </section>
+    )}
+
+    {release.data.links && (
+      <section class="links">
+        <h2>Lyssna</h2>
+        <ul>
+          {release.data.links.spotify && (
+            <li><a href={release.data.links.spotify} class="primary-link">Lyssna på Spotify</a></li>
+          )}
+          {release.data.links.youtube && (
+            <li><a href={release.data.links.youtube}>YouTube</a></li>
+          )}
+        </ul>
+      </section>
+    )}
+
+    {spotifyEmbed && (
+      <section class="embed">
+        <iframe
+          src={`https://open.spotify.com/embed/${spotifyEmbed.type}/${spotifyEmbed.id}`}
+          width="100%"
+          height={spotifyEmbed.type === 'album' ? 380 : 152}
+          frameborder="0"
+          allowtransparency="true"
+          allow="encrypted-media"
+          title={`Spotify player för ${release.data.title}`}
+        />
+      </section>
+    )}
+
+    <nav class="back-link">
+      <a href="/music">← Tillbaka till musik</a>
+    </nav>
+  </article>
+
+  <style>
+    article {
+      max-width: 800px;
+    }
+
+    header {
+      margin-bottom: var(--space-lg);
+    }
+
+    h1 {
+      margin-bottom: var(--space-xs);
+    }
+
+    .meta {
+      color: var(--text-muted);
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    .cover {
+      max-width: 400px;
+      width: 100%;
+      height: auto;
+      border: 1px solid var(--border);
+      margin-bottom: var(--space-lg);
+    }
+
+    section {
+      margin-bottom: var(--space-lg);
+      padding-bottom: var(--space-lg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    section:last-of-type {
+      border-bottom: none;
+    }
+
+    .description {
+      line-height: 1.6;
+    }
+
+    .tracklist ol {
+      margin: 0;
+      padding-left: var(--space-lg);
+    }
+
+    .tracklist li {
+      margin-bottom: var(--space-xs);
+    }
+
+    .links ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+    }
+
+    .links a {
+      color: var(--accent);
+    }
+
+    .links .primary-link {
+      font-weight: bold;
+    }
+
+    .embed {
+      margin-top: var(--space-md);
+    }
+
+    .back-link {
+      margin-top: var(--space-xl);
+      border: none;
+      padding: 0;
+    }
+
+    .back-link a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .back-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</BaseLayout>

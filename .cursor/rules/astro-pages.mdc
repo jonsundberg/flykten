@@ -1,0 +1,14 @@
+---
+description: Astro-sidor, layout och content collections
+globs: "**/*.astro"
+alwaysApply: false
+---
+
+# Astro i Flykten
+
+- Använd **filbaserad routing** och **Content Collections** (ingen custom loader).
+- Schema för collections definieras i `apps/web/src/content/config.ts`; håll frontmatter minimalt och i linje med design.md.
+- **BaseLayout.astro** används på alla sidor: importera `brand/tokens.css`, inkludera nav (Hem, Musik, Live, Press), skip-to-content-länk, `<main id="main">`, footer.
+- **Sidor:** `/`, `/music`, `/live`, `/press`, `/releases/[slug]`. Alla routes genereras statiskt vid build.
+- Minimera JavaScript; sidan ska fungera utan JS. Ingen client-side routing – använd vanliga `<a href="...">`.
+- Semantisk HTML och tydlig heading-hierarki (h1 → h2 → …).

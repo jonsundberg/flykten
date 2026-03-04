@@ -1,0 +1,135 @@
+---
+import 'brand/tokens.css';
+import 'brand/retro.css';
+
+interface Props {
+  title?: string;
+}
+
+const { title = 'Flykten' } = Astro.props;
+const currentPath = Astro.url.pathname;
+---
+
+<!DOCTYPE html>
+<html lang="sv">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Staatliches&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Hoppa till innehåll</a>
+    
+    <nav class="site-nav">
+      <a href="/" class="nav-brand">Flykten</a>
+      <ul>
+        <li><a href="/" aria-current={currentPath === '/' ? 'page' : undefined}>Hem</a></li>
+        <li><a href="/music" aria-current={currentPath === '/music' ? 'page' : undefined}>Musik</a></li>
+        <li><a href="/live" aria-current={currentPath === '/live' ? 'page' : undefined}>Live</a></li>
+        <li><a href="/press" aria-current={currentPath === '/press' ? 'page' : undefined}>Press</a></li>
+      </ul>
+    </nav>
+
+    <main id="main">
+      <div class="page">
+        <slot />
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; {new Date().getFullYear()} Flykten · <a href="https://open.spotify.com/artist/01dKISXE54g2YGbyxYM7II">Spotify</a></p>
+    </footer>
+
+    <style>
+      .skip-link {
+        position: absolute;
+        top: -40px;
+        left: 0;
+        background: var(--bg);
+        color: var(--text);
+        padding: var(--space-xs) var(--space-sm);
+        text-decoration: none;
+        border: 1px solid var(--border);
+      }
+
+      .skip-link:focus {
+        top: 0;
+      }
+
+      .site-nav {
+        border-bottom: 1px solid var(--border);
+        padding: var(--space-sm) var(--space-lg);
+        display: flex;
+        align-items: center;
+        gap: var(--space-xl);
+        flex-wrap: wrap;
+      }
+
+      .nav-brand {
+        font-family: var(--font-display);
+        font-size: 1.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        text-decoration: none;
+        color: var(--text);
+      }
+
+      .nav-brand:hover {
+        color: var(--accent);
+      }
+
+      .site-nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        gap: var(--space-md);
+      }
+
+      .site-nav a:not(.nav-brand) {
+        text-decoration: none;
+        color: var(--text-muted);
+      }
+
+      .site-nav a:not(.nav-brand):hover {
+        color: var(--text);
+        text-decoration: underline;
+      }
+
+      .site-nav a[aria-current="page"] {
+        font-weight: bold;
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      main {
+        padding: var(--space-lg);
+        min-height: 60vh;
+      }
+
+      .site-footer {
+        border-top: 1px solid var(--border);
+        padding: var(--space-md);
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+      }
+
+      .site-footer p {
+        margin: 0;
+      }
+
+      .site-footer a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      .site-footer a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </body>
+</html>

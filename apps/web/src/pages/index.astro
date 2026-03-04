@@ -1,0 +1,134 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
+
+const releases = await getCollection('releases');
+const latestRelease = releases.sort((a, b) => 
+  new Date(b.data.releaseDate).getTime() - new Date(a.data.releaseDate).getTime()
+)[0];
+
+// Read contact markdown file directly
+const contactPath = join(process.cwd(), '../../packages/content/contact.md');
+const contactText = await readFile(contactPath, 'utf-8');
+// Extract email and booking from frontmatter
+const frontmatterMatch = contactText.match(/^---\n([\s\S]*?)\n---/);
+let email = 'contact@flykten.se';
+let booking = 'booking@flykten.se';
+if (frontmatterMatch) {
+  const emailMatch = frontmatterMatch[1].match(/email:\s*(.+)/);
+  const bookingMatch = frontmatterMatch[1].match(/booking:\s*(.+)/);
+  if (emailMatch) email = emailMatch[1].trim();
+  if (bookingMatch) booking = bookingMatch[1].trim();
+}
+---
+
+<BaseLayout title="Flykten">
+  <h1 class="page-title page-title--hero">Flykten</h1>
+
+  <blockquote class="intro">
+    <p>Flykten är tomrummets motreaktion – ett nålstick i en vakuum-ballong. En snabb färd undan fängelse och auktoriteter. Den förbannade energin. Eller ruset.</p>
+    <p>Det finns också ett band som heter Flykten. Ett irriterande arrogant band med för mycket självförtroende för sitt eget bästa som gör musik för dom som skriker i sömnen. De är fyra hårt arbetande musiker.</p>
+    <p>Pälsklädda och krönta har kvartetten rört sig genom tunnlarna. Nu är de ute på andra sidan.</p> - Oscar Pierrou
+  </blockquote> 
+
+  <table class="home-table">
+    <tr>
+      <td>
+        <h2>Senaste release</h2>
+        {latestRelease && (
+          <div>
+            <h3><a href={`/releases/${latestRelease.slug}`}>{latestRelease.data.title}</a></h3>
+            <p class="meta">{latestRelease.data.type} – {latestRelease.data.releaseDate}</p>
+            {latestRelease.data.links && (
+              <ul class="link-list">
+                {latestRelease.data.links.spotify && (
+                  <li><a href={latestRelease.data.links.spotify} class="primary-link">Lyssna på Spotify</a></li>
+                )}
+                {latestRelease.data.links.youtube && (
+                  <li><a href={latestRelease.data.links.youtube}>YouTube</a></li>
+                )}
+              </ul>
+            )}
+          </div>
+        )}
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h2>Kontakt</h2>
+        <p>
+          Allmänna frågor: <a href={`mailto:${email}`}>{email}</a><br />
+          Bokningar: <a href={`mailto:${booking}`}>{booking}</a>
+        </p>
+      </td>
+    </tr>
+  </table>
+
+  <style>
+    .intro {
+      margin: 0 0 var(--space-xl) 0;
+      padding: var(--space-md) 0;
+      border: none;
+      border-left: 3px solid var(--accent);
+      padding-left: var(--space-md);
+      font-style: italic;
+      color: var(--text);
+    }
+
+    .intro p {
+      margin: 0 0 var(--space-sm) 0;
+    }
+
+    .intro p:last-child {
+      margin-bottom: 0;
+    }
+
+    .home-table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+    }
+
+    .home-table td {
+      border: 1px solid var(--border);
+      padding: var(--space-md);
+      vertical-align: top;
+    }
+
+    .home-table h2 {
+      margin-top: 0;
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: var(--text-muted);
+    }
+
+    .home-table h3 {
+      margin: 0 0 var(--space-xs) 0;
+      font-size: 1.25rem;
+    }
+
+    .home-table .meta {
+      color: var(--text-muted);
+      margin: 0 0 var(--space-sm) 0;
+      font-size: 0.9rem;
+    }
+
+    .link-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+    }
+
+    .link-list .primary-link {
+      font-weight: bold;
+    }
+  </style>
+</BaseLayout>
