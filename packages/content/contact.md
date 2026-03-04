@@ -1,12 +1,12 @@
 ---
-email: contact@flykten.se
-booking: booking@flykten.se
+email: flyktpost@gmail.com
+booking: flyktpost@gmail.com
 ---
 
 # Kontakt
 
-För allmänna frågor, mejla **contact@flykten.se**
+För allmänna frågor, mejla **flyktpost@gmail.com**
 
-För bokningar, mejla **booking@flykten.se**
+För bokningar, mejla **flyktpost@gmail.com**
 
 Vi svarar när vi kan. Inga löften om snabba svar, men vi läser allt.
