@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { marked } from 'marked';
 
 const pressEntries = await getCollection('press');
 const bioShort = pressEntries.find(e => e.slug === 'bio.short');
@@ -27,7 +28,8 @@ if (frontmatterMatch) {
   if (emailMatch) email = emailMatch[1].trim();
   if (bookingMatch) booking = bookingMatch[1].trim();
 }
-const contactBody = contactText.replace(/^---[\s\S]*?---\n/, '');
+const contactBodyRaw = contactText.replace(/^---[\s\S]*?---\n/, '').trim();
+const contactBody = marked.parse(contactBodyRaw) as string;
 ---
 
 <BaseLayout title="Press – Flykten">
