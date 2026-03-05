@@ -5,7 +5,7 @@
   "description": "Flykten band website monorepo",
   "scripts": {
     "dev": "pnpm --filter web dev",
-    "build": "pnpm --filter web build",
+    "build": "pnpm --filter web build && cp -r apps/web/dist dist",
     "preview": "pnpm --filter web preview",
     "fetch-spotify": "node scripts/fetch-spotify-releases.mjs"
   },
