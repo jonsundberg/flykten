@@ -16,11 +16,17 @@ const contactText = await readFile(contactPath, 'utf-8');
 const frontmatterMatch = contactText.match(/^---\n([\s\S]*?)\n---/);
 let email = 'contact@flykten.se';
 let booking = 'booking@flykten.se';
+let labelName = '';
+let labelUrl = '';
 if (frontmatterMatch) {
   const emailMatch = frontmatterMatch[1].match(/email:\s*(.+)/);
   const bookingMatch = frontmatterMatch[1].match(/booking:\s*(.+)/);
+  const labelNameMatch = frontmatterMatch[1].match(/labelName:\s*(.+)/);
+  const labelUrlMatch = frontmatterMatch[1].match(/labelUrl:\s*(.+)/);
   if (emailMatch) email = emailMatch[1].trim();
   if (bookingMatch) booking = bookingMatch[1].trim();
+  if (labelNameMatch) labelName = labelNameMatch[1].trim();
+  if (labelUrlMatch) labelUrl = labelUrlMatch[1].trim();
 }
 ---
 
@@ -62,6 +68,11 @@ if (frontmatterMatch) {
           Allmänna frågor: <a href={`mailto:${email}`}>{email}</a><br />
           Bokningar: <a href={`mailto:${booking}`}>{booking}</a>
         </p>
+        {labelName && labelUrl && (
+          <p>
+            Skivbolag: <a href={labelUrl} target="_blank" rel="noopener noreferrer">{labelName}</a>
+          </p>
+        )}
       </td>
     </tr>
   </table>
