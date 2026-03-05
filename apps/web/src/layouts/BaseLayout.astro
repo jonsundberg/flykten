@@ -43,7 +43,8 @@ const ogImage = image ? (image.startsWith('http') ? image : `${site}${image.star
     <meta name="twitter:description" content={metaDescription} />
     <meta name="twitter:image" content={ogImage} />
 
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href={site ? `${site}/favicon.svg` : '/favicon.svg'} type="image/svg+xml" />
+    <link rel="shortcut icon" href={site ? `${site}/favicon.svg` : '/favicon.svg'} type="image/svg+xml" />
     {site && <link rel="sitemap" href={`${site}/sitemap-index.xml`} type="application/xml" />}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
