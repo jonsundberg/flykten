@@ -32,7 +32,10 @@ const contactBodyRaw = contactText.replace(/^---[\s\S]*?---\n/, '').trim();
 const contactBody = marked.parse(contactBodyRaw) as string;
 ---
 
-<BaseLayout title="Press – Flykten">
+<BaseLayout
+  title="Press – Flykten"
+  description="Press och media – bio i tre längder, pressbilder och kontakt till Flykten för intervjuer och samarbeten."
+>
   <h1 class="page-title">Press</h1>
 
   <section>

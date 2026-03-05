@@ -4,10 +4,19 @@ import 'brand/retro.css';
 
 interface Props {
   title?: string;
+  description?: string;
+  /** Absolut eller relativ URL till bild för Open Graph (t.ex. delning i sociala medier). */
+  image?: string;
 }
 
-const { title = 'Flykten' } = Astro.props;
+const { title = 'Flykten', description, image } = Astro.props;
 const currentPath = Astro.url.pathname;
+
+const site = (typeof Astro.site === 'string' ? Astro.site : '').replace(/\/$/, '');
+const canonicalUrl = site ? `${site}${Astro.url.pathname}` : Astro.url.href;
+const defaultDescription = 'Flykten – ett band. Musik, live, press och kontakt.';
+const metaDescription = description ?? defaultDescription;
+const ogImage = image ? (image.startsWith('http') ? image : `${site}${image.startsWith('/') ? '' : '/'}${image}`) : `${site}/images/brand/ep-background.png`;
 ---
 
 <!DOCTYPE html>
@@ -16,6 +25,26 @@ const currentPath = Astro.url.pathname;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <title>{title}</title>
+    <meta name="description" content={metaDescription} />
+    <link rel="canonical" href={canonicalUrl} />
+    <meta name="theme-color" content="#0a0a0a" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={metaDescription} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content="sv_SE" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={metaDescription} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    {site && <link rel="sitemap" href={`${site}/sitemap-index.xml`} type="application/xml" />}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Staatliches&display=swap" rel="stylesheet" />
