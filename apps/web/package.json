@@ -5,11 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node scripts/generate-sitemap.mjs",
     "preview": "astro preview"
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.0.0",
     "astro": "^4.0.0",
     "content": "workspace:*",
     "brand": "workspace:*",
