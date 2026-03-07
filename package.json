@@ -7,7 +7,8 @@
     "dev": "pnpm --filter web dev",
     "build": "pnpm --filter web build && cp -r apps/web/dist dist",
     "preview": "pnpm --filter web preview",
-    "fetch-spotify": "node scripts/fetch-spotify-releases.mjs"
+    "fetch-spotify": "node scripts/fetch-spotify-releases.mjs",
+    "download-video": "bash scripts/download-youtube-video.sh"
   },
   "devDependencies": {
     "dotenv": "^16.4.5",

@@ -9,6 +9,9 @@
   --accent: #d71920;
   --border: #333333;
 
+  /* Homepage Revolution section */
+  --portal-revolution: #b81a20;
+
   /* Typography – match branding guide */
   --font-display: "Staatliches", "Impact", sans-serif;
   --font-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;

@@ -18,6 +18,10 @@ body::before {
   z-index: 1;
 }
 
+.page--wide {
+  max-width: min(1000px, 100%);
+}
+
 /* Display title (band name, page headings) */
 .page-title {
   font-family: var(--font-display);

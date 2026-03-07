@@ -20,3 +20,6 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# Large local assets (video can be re-downloaded with pnpm run download-video)
+apps/web/public/video/

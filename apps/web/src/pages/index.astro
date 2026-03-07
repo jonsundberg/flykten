@@ -1,86 +1,107 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
+
+function getSpotifyEmbed(spotifyUrl: string | undefined): { type: 'album' | 'track'; id: string } | null {
+  if (!spotifyUrl || typeof spotifyUrl !== 'string') return null;
+  const albumMatch = spotifyUrl.match(/spotify\.com\/album\/([a-zA-Z0-9]+)/);
+  const trackMatch = spotifyUrl.match(/spotify\.com\/track\/([a-zA-Z0-9]+)/);
+  if (albumMatch?.[1] && albumMatch[1] !== 'example' && albumMatch[1].length >= 10) {
+    return { type: 'album', id: albumMatch[1] };
+  }
+  if (trackMatch?.[1]) return { type: 'track', id: trackMatch[1] };
+  return null;
+}
 
 const releases = await getCollection('releases');
-const latestRelease = releases.sort((a, b) => 
+const latestRelease = releases.sort((a, b) =>
   new Date(b.data.releaseDate).getTime() - new Date(a.data.releaseDate).getTime()
 )[0];
-
-// Read contact markdown file directly
-const contactPath = join(process.cwd(), '../../packages/content/contact.md');
-const contactText = await readFile(contactPath, 'utf-8');
-// Extract email and booking from frontmatter
-const frontmatterMatch = contactText.match(/^---\n([\s\S]*?)\n---/);
-let email = 'contact@flykten.se';
-let booking = 'booking@flykten.se';
-let labelName = '';
-let labelUrl = '';
-if (frontmatterMatch) {
-  const emailMatch = frontmatterMatch[1].match(/email:\s*(.+)/);
-  const bookingMatch = frontmatterMatch[1].match(/booking:\s*(.+)/);
-  const labelNameMatch = frontmatterMatch[1].match(/labelName:\s*(.+)/);
-  const labelUrlMatch = frontmatterMatch[1].match(/labelUrl:\s*(.+)/);
-  if (emailMatch) email = emailMatch[1].trim();
-  if (bookingMatch) booking = bookingMatch[1].trim();
-  if (labelNameMatch) labelName = labelNameMatch[1].trim();
-  if (labelUrlMatch) labelUrl = labelUrlMatch[1].trim();
-}
+const spotifyEmbed = latestRelease ? getSpotifyEmbed(latestRelease.data.links?.spotify) : null;
+const embedHeight = spotifyEmbed?.type === 'album' ? 380 : 152;
 ---
 
 <BaseLayout
   title="Flykten"
   description="Flykten är ett band från Sverige. Musik, live, press och kontakt – officiell webbplats."
+  wide
 >
-  <h1 class="page-title page-title--hero">Flykten</h1>
+  <div class="home">
+    <h1 class="page-title page-title--hero">Flykten</h1>
 
-  <blockquote class="intro">
-    <p>Flykten är tomrummets motreaktion – ett nålstick i en vakuum-ballong. En snabb färd undan fängelse och auktoriteter. Den förbannade energin. Eller ruset.</p>
-    <p>Det finns också ett band som heter Flykten. Ett irriterande arrogant band med för mycket självförtroende för sitt eget bästa som gör musik för dom som skriker i sömnen. De är fyra hårt arbetande musiker.</p>
-    <p>Pälsklädda och krönta har kvartetten rört sig genom tunnlarna. Nu är de ute på andra sidan.</p> - Oscar Pierrou
-  </blockquote> 
+    <blockquote class="intro">
+      <p>Flykten är tomrummets motreaktion – ett nålstick i en vakuum-ballong. En snabb färd undan fängelse och auktoriteter. Den förbannade energin. Eller ruset.</p>
+      <p>Det finns också ett band som heter Flykten. Ett irriterande arrogant band med för mycket självförtroende för sitt eget bästa som gör musik för dom som skriker i sömnen. De är fyra hårt arbetande musiker.</p>
+      <p>Pälsklädda och krönta har kvartetten rört sig genom tunnlarna. Nu är de ute på andra sidan.</p>
+      <footer>— Oscar Pierrou</footer>
+    </blockquote>
 
-  <table class="home-table">
-    <tr>
-      <td>
-        <h2>Senaste release</h2>
-        {latestRelease && (
-          <div>
-            <h3><a href={`/releases/${latestRelease.slug}`}>{latestRelease.data.title}</a></h3>
-            <p class="meta">{latestRelease.data.type} – {latestRelease.data.releaseDate}</p>
-            {latestRelease.data.links && (
-              <ul class="link-list">
-                {latestRelease.data.links.spotify && (
-                  <li><a href={latestRelease.data.links.spotify} class="primary-link">Lyssna på Spotify</a></li>
-                )}
-                {latestRelease.data.links.youtube && (
-                  <li><a href={latestRelease.data.links.youtube}>YouTube</a></li>
-                )}
-              </ul>
+    <section class="section section--revolution" aria-labelledby="revolution-heading">
+      <h2 id="revolution-heading" class="section__heading">Revolution</h2>
+      {latestRelease ? (
+        <div class="revolution-content">
+          <div class="release-block">
+            {latestRelease.data.cover && (
+              <a href={`/releases/${latestRelease.slug}`} class="release-block__cover-link">
+                <img
+                  src={latestRelease.data.cover}
+                  alt={`Omslag för ${latestRelease.data.title}`}
+                  class="release-block__cover"
+                  width="300"
+                  height="300"
+                />
+              </a>
             )}
+            <div class="release-block__body">
+              <h3 class="release-block__title">
+                <a href={`/releases/${latestRelease.slug}`}>{latestRelease.data.title}</a>
+              </h3>
+              <p class="release-block__meta">{latestRelease.data.type} – {latestRelease.data.releaseDate}</p>
+              {latestRelease.data.links?.spotify && (
+                <a href={latestRelease.data.links.spotify} class="release-block__spotify">Lyssna på Spotify</a>
+              )}
+            </div>
           </div>
-        )}
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <h2>Kontakt</h2>
-        <p>
-          Allmänna frågor: <a href={`mailto:${email}`}>{email}</a><br />
-          Bokningar: <a href={`mailto:${booking}`}>{booking}</a>
-        </p>
-        {labelName && labelUrl && (
-          <p>
-            Skivbolag: <a href={labelUrl} target="_blank" rel="noopener noreferrer">{labelName}</a>
-          </p>
-        )}
-      </td>
-    </tr>
-  </table>
+          {spotifyEmbed && (
+            <div class="section__embed">
+              <iframe
+                src={`https://open.spotify.com/embed/${spotifyEmbed.type}/${spotifyEmbed.id}`}
+                width="100%"
+                height={embedHeight}
+                frameborder="0"
+                allowtransparency="true"
+                allow="encrypted-media"
+                title={`Spotify player för ${latestRelease.data.title}`}
+              />
+            </div>
+          )}
+        </div>
+      ) : (
+        <p class="section__fallback">Ingen release publicerad än.</p>
+      )}
+    </section>
+  </div>
 
   <style>
+    .home {
+      max-width: min(1000px, 100%);
+      margin: 0 auto;
+    }
+
+    .page-title {
+      font-family: var(--font-display);
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      margin: 0 0 var(--space-lg) 0;
+    }
+
+    .page-title--hero {
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      line-height: 1.1;
+      margin-bottom: var(--space-xl);
+    }
+
     .intro {
       margin: 0 0 var(--space-xl) 0;
       padding: var(--space-md) 0;
@@ -95,54 +116,101 @@ if (frontmatterMatch) {
       margin: 0 0 var(--space-sm) 0;
     }
 
-    .intro p:last-child {
-      margin-bottom: 0;
+    .intro p:last-of-type {
+      margin-bottom: var(--space-sm);
     }
 
-    .home-table {
-      width: 100%;
-      border-collapse: collapse;
-      border: 1px solid var(--border);
-      background: var(--bg-secondary);
-    }
-
-    .home-table td {
-      border: 1px solid var(--border);
-      padding: var(--space-md);
-      vertical-align: top;
-    }
-
-    .home-table h2 {
-      margin-top: 0;
-      font-family: var(--font-display);
-      font-size: 1.1rem;
-      text-transform: uppercase;
-      letter-spacing: 0.02em;
+    .intro footer {
+      margin: 0;
+      font-style: normal;
       color: var(--text-muted);
+      font-size: 0.95rem;
     }
 
-    .home-table h3 {
+    .section {
+      padding: var(--space-xl) 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .section__heading {
+      font-family: var(--font-display);
+      font-size: clamp(1.25rem, 3vw, 1.75rem);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin: 0 0 var(--space-lg) 0;
+      color: var(--portal-revolution);
+    }
+
+    .release-block {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+
+    @media (min-width: 600px) {
+      .release-block {
+        flex-direction: row;
+        align-items: flex-start;
+      }
+    }
+
+    .release-block__cover-link {
+      flex-shrink: 0;
+    }
+
+    .release-block__cover {
+      display: block;
+      width: 100%;
+      max-width: 280px;
+      height: auto;
+      border: 1px solid var(--border);
+    }
+
+    .release-block__body {
+      min-width: 0;
+    }
+
+    .release-block__title {
       margin: 0 0 var(--space-xs) 0;
-      font-size: 1.25rem;
+      font-size: 1.5rem;
     }
 
-    .home-table .meta {
+    .release-block__title a {
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .release-block__title a:hover {
+      color: var(--accent);
+      text-decoration: underline;
+    }
+
+    .release-block__meta {
       color: var(--text-muted);
       margin: 0 0 var(--space-sm) 0;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
     }
 
-    .link-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      gap: var(--space-sm);
-      flex-wrap: wrap;
-    }
-
-    .link-list .primary-link {
+    .release-block__spotify {
+      display: inline-block;
       font-weight: bold;
+      padding: var(--space-xs) 0;
+    }
+
+    .section__embed {
+      margin-top: var(--space-md);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .section__embed iframe {
+      display: block;
+    }
+
+    .section__fallback {
+      color: var(--text-muted);
+      margin: 0;
     }
   </style>
 </BaseLayout>

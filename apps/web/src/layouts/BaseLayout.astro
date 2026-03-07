@@ -7,9 +7,11 @@ interface Props {
   description?: string;
   /** Absolut eller relativ URL till bild för Open Graph (t.ex. delning i sociala medier). */
   image?: string;
+  /** Bredare innehållsbredd (t.ex. startsida). */
+  wide?: boolean;
 }
 
-const { title = 'Flykten', description, image } = Astro.props;
+const { title = 'Flykten', description, image, wide = false } = Astro.props;
 const currentPath = Astro.url.pathname;
 
 const site = (typeof Astro.site === 'string' ? Astro.site : '').replace(/\/$/, '');
@@ -64,7 +66,7 @@ const ogImage = image ? (image.startsWith('http') ? image : `${site}${image.star
     </nav>
 
     <main id="main">
-      <div class="page">
+      <div class:list={['page', wide && 'page--wide']}>
         <slot />
       </div>
     </main>
