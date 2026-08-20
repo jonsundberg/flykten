@@ -45,13 +45,9 @@ matches.forEach((match, i) => {
   });
 });
 
-const now = new Date();
-const upcoming = gigs.filter(g => new Date(g.date) >= now).sort((a, b) => 
-  new Date(a.date).getTime() - new Date(b.date).getTime()
-);
-const past = gigs.filter(g => new Date(g.date) < now).sort((a, b) => 
-  new Date(b.date).getTime() - new Date(a.date).getTime()
-);
+const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Stockholm' });
+const upcoming = gigs.filter((g) => g.date >= today).sort((a, b) => a.date.localeCompare(b.date));
+const past = gigs.filter((g) => g.date < today).sort((a, b) => b.date.localeCompare(a.date));
 ---
 
 <BaseLayout

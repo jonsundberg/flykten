@@ -1,0 +1,20 @@
+name: Nightly rebuild
+
+on:
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Vercel deploy hook
+        env:
+          DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$DEPLOY_HOOK" ]; then
+            echo "Add repository secret VERCEL_DEPLOY_HOOK (Vercel → Project → Settings → Git → Deploy Hooks)."
+            exit 1
+          fi
+          curl -fsS -X POST "$DEPLOY_HOOK"
