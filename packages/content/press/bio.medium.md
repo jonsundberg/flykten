@@ -1,13 +1,13 @@
 ---
-title: Medium Bio
+title: Mellanlång bio
 ---
 
-Flykten bildades i början av 2010-talet och släppte sitt självbetitlade debutalbum 2013. Redan då var det svårt att placera bandet i ett fack. Influenserna sträckte sig från 70-talets tyngd till mer direkt punkenergi – men det som höll ihop allt var hållningen.
+Med punkig nerv, tunga gitarrer, starka melodier och svenska texter fortsätter Flykten en resa som började med ambitionen att spela stonerrock på svenska – men som ganska snart utvecklades till något helt eget.
 
-Det har aldrig handlat om att låta på ett visst sätt.
-Det har handlat om att mena det.
+Bandet bildades i Stockholm när gymnasiekompisarna Johannes Nordell och Kalle Hörnfeldt från Hudiksvall började träffas för att skriva musik. Tillsammans med gitarristen Jon Sundberg och basisten John Dolve växte projektet till ett band.
 
-Genom åren har uttrycket skiftat i tempo och form, men nerven är densamma. Gitarrer som driver framåt. Texter som rör sig mellan det personliga och det större sammanhanget.
+När det självbetitlade debutalbumet *Flykten* släpptes 2013 hörde Nöjesguiden »gedigen urkraft« och gav skivan 5 av 6. Aftonbladets Håkan Steen skrev: »Kul debut som blandar BRMC-boogie med postpunk och drönig folk.«
 
-Flykten är inte ett stilprojekt.
-Det är ett sätt att förhålla sig.
+På scen står fortfarande samma fyra personer. Att sångaren sitter bakom trummorna längst fram på scenen säger en del om Flykten.
+
+Inte riktigt stoner. Inte riktigt punk. Inte riktigt progg. Flykten. Rock på ren svenska.
