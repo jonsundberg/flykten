@@ -4,13 +4,16 @@ title: Gigs
 
 ## 2026-10-28 – Kaliber Room, Uppsala
 
-<img src="/images/press/flykten-press-2026.jpg" alt="Pressbild på Flykten: fyra bandmedlemmar poserar mot en ljus putsad vägg. En av dem bär en keps med bandnamnet." />
+<img src="/images/gigs/kaliber-2026-10-28.jpg" alt="Eventaffisch för Grizzly The Indie Club: Flykten live på The Kaliber Room, onsdag 28 oktober, fri entré. Rosa bandfoto med prickig ram." />
 
-Onsdag 28 oktober. Flykten live på **Kaliber Room** i Uppsala.
+Onsdag 28 oktober. **Grizzly The Indie Club** presenterar Flykten live på **The Kaliber Room** i Uppsala.
 
-**Plats:** Storgatan 27, Uppsala.
+**Spelning:** 20:00  
+**Entré:** Fri entré  
+**Åldersgräns:** 18 år  
+**Plats:** Storgatan 27, Uppsala
 
-Mer info: [kaliberroom.se](https://kaliberroom.se/)
+Mer info: [kaliberroom.se](https://kaliberroom.se/) | [Facebook-event](https://www.facebook.com/events/1057503380367553/)
 
 ## 2026-04-18 – Huddinge Kulturhus hos Folkes
 
