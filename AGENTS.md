@@ -15,9 +15,9 @@ Projektet är specificerat med [Kiro](https://kiro.dev) i `.kiro/specs/flykten-b
 
 | Fil | Innehåll |
 |-----|----------|
-| `requirements.md` | Formella krav (User Stories + Acceptance Criteria). Krav 1–16 täcker monorepo, content, webb, design, sidor, tillgänglighet, build, MCP m.m. |
+| `requirements.md` | Formella krav (User Stories + Acceptance Criteria). Krav 1–16 täcker monorepo, content, webb, design, sidor, tillgänglighet, build m.m. |
 | `design.md` | Teknisk design: stack, mappstruktur, content-format, layout, styling, vad projektet **inte** är. |
-| `tasks.md` | Implementation plan med checkboxar. Visar vad som är klart (t.ex. Setup, Content, BaseLayout) och vad som återstår (Sidor, Styling, A11y, Build, MCP). |
+| `tasks.md` | Implementation plan med checkboxar. Visar vad som är klart (Setup, Content, BaseLayout, Sidor, Styling) och vad som återstår (A11y, Build). |
 
 **Vid osäkerhet:** Läs relevant del av `requirements.md` eller `design.md` och följ den. Undvik lösningar som kräver databas, runtime, extern CMS eller onödig abstraktion.
 
@@ -28,11 +28,10 @@ flykten/
   apps/web/          # Astro-webbapp (statisk SSG)
   packages/content/  # Markdown: bio, releases, gigs, contact
   packages/brand/    # tokens.css, retro-styling
-  tools/mcp-flykten/ # Valfri MCP-server för AI-assisterad content
 ```
 
 - **Build:** pnpm workspaces. `pnpm dev` startar webben, `pnpm build` bygger statiskt.
-- **Content:** Allt i `packages/content/` – press/bio.*.md, releases/[slug]/release.md, gigs/gigs.md, contact.md. Astro Content Collections läser innehållet; ingen custom loader.
+- **Content:** Allt i `packages/content/` – press/bio.*.md, releases/[slug].md, gigs/gigs.md, contact.md. Astro Content Collections läser innehållet; ingen custom loader.
 - **Styling:** Endast `packages/brand` (CSS custom properties + eventuellt retro.css). Ingen Tailwind, ingen CSS-processor.
 
 ## Teknisk stack
@@ -65,11 +64,12 @@ Läs och följ dessa regler vid kodändringar.
 
 ## Nästa steg (enligt tasks.md)
 
-- **Task 4:** Implementera sidor (/, /music, /live, /press, /releases/[slug]) med Content Collections.
-- **Task 5:** Styling (tokens.css, retro.css, tabell-layout på startsidan, aktiv sida i nav).
+Sidorna är implementerade och live. Kvarstående uppgifter:
+
 - **Task 6:** Accessibility-pass.
 - **Task 7:** Production build och verifiering.
-- **Task 8 (optional):** MCP-server i tools/mcp-flykten.
+
+*MCP-servern (Task 8) har avvecklats till förmån för Grok Bot-baserat innehållsarbete.*
 
 ## Sammanfattning för agenten
 

@@ -10,22 +10,22 @@ import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
 const distDir = join(root, 'dist');
-const contentReleases = join(root, '../../../packages/content/releases');
+const contentReleases = join(root, '../../packages/content/releases');
 const site = 'https://flykten.com';
 
 const staticPaths = ['', 'music', 'live', 'press'];
 let releaseSlugs = [];
 try {
   releaseSlugs = readdirSync(contentReleases, { withFileTypes: true })
-    .filter((d) => d.isDirectory())
-    .map((d) => d.name);
+    .filter((d) => d.isFile() && d.name.endsWith('.md'))
+    .map((d) => d.name.replace('.md', ''));
 } catch {
   // content kan vara annan path vid build
 }
 
 const urls = [
   ...staticPaths.map((p) => `${site}/${p ? p + '/' : ''}`),
-  ...releaseSlugs.map((slug) => `${site}/releases/${slug}/release/`),
+  ...releaseSlugs.map((slug) => `${site}/releases/${slug}/`),
 ];
 
 const now = new Date().toISOString().slice(0, 10);

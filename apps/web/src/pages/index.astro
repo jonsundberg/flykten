@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 
 function getSpotifyEmbed(spotifyUrl: string | undefined): { type: 'album' | 'track'; id: string } | null {
   if (!spotifyUrl || typeof spotifyUrl !== 'string') return null;
@@ -19,6 +21,21 @@ const latestRelease = releases.sort((a, b) =>
 )[0];
 const spotifyEmbed = latestRelease ? getSpotifyEmbed(latestRelease.data.links?.spotify) : null;
 const embedHeight = spotifyEmbed?.type === 'album' ? 380 : 152;
+
+const gigsPath = join(process.cwd(), '../../packages/content/gigs/gigs.md');
+const gigsText = await readFile(gigsPath, 'utf-8');
+const gigsBody = gigsText.replace(/^---[\s\S]*?---\n/, '');
+const gigRegex = /## (\d{4}-\d{2}-\d{2}) – (.+)/g;
+
+const gigs: Array<{ date: string; venue: string }> = [];
+let match;
+while ((match = gigRegex.exec(gigsBody)) !== null) {
+  gigs.push({ date: match[1], venue: match[2] });
+}
+
+const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Stockholm' });
+const upcoming = gigs.filter((g) => g.date >= today).sort((a, b) => a.date.localeCompare(b.date));
+const nextGig = upcoming.length > 0 ? upcoming[0] : null;
 ---
 
 <BaseLayout
@@ -78,6 +95,21 @@ const embedHeight = spotifyEmbed?.type === 'album' ? 380 : 152;
         </div>
       ) : (
         <p class="section__fallback">Ingen release publicerad än.</p>
+      )}
+    </section>
+
+    <section class="section section--gig" aria-labelledby="gig-heading">
+      <h2 id="gig-heading" class="section__heading">Nästa spelning</h2>
+      {nextGig ? (
+        <div class="gig-preview">
+          <p class="gig-preview__date">{nextGig.date}</p>
+          <p class="gig-preview__venue">{nextGig.venue}</p>
+          <a href="/live" class="gig-preview__link">Se alla spelningar →</a>
+        </div>
+      ) : (
+        <p class="section__fallback">
+          Inga kommande spelningar just nu. <a href="/live">Se tidigare spelningar</a>
+        </p>
       )}
     </section>
   </div>
@@ -211,6 +243,38 @@ const embedHeight = spotifyEmbed?.type === 'album' ? 380 : 152;
     .section__fallback {
       color: var(--text-muted);
       margin: 0;
+    }
+
+    .section__fallback a {
+      color: var(--accent);
+    }
+
+    .gig-preview {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .gig-preview__date {
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      margin: 0;
+      color: var(--accent);
+    }
+
+    .gig-preview__venue {
+      font-size: 1.25rem;
+      margin: 0;
+    }
+
+    .gig-preview__link {
+      margin-top: var(--space-sm);
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .gig-preview__link:hover {
+      text-decoration: underline;
     }
   </style>
 </BaseLayout>

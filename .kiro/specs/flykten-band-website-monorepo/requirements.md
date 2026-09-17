@@ -20,7 +20,6 @@ Målet är ett långsiktigt arkiv lika mycket som en hemsida.
 - **Web_App**: Astro-baserad statisk hemsida för bandet
 - **Content_Package**: Markdown-baserad content-källa med bio, releases, gigs och kontaktinfo
 - **Brand_Package**: Paket med färger, typografi, CSS och visuella riktlinjer
-- **MCP_Server**: Model Context Protocol server för AI-assisterad content-hantering
 - **Build_System**: pnpm workspaces-baserat byggsystem för monorepo
 - **Release**: En musikutgåva (album, EP, singel) med metadata och tracklist
 - **Gig**: En spelning/konsert med datum, plats och information
@@ -35,7 +34,7 @@ Målet är ett långsiktigt arkiv lika mycket som en hemsida.
 
 ### Acceptance Criteria
 
-1. THE Build_System SHALL organize code into workspaces: apps/web, packages/content, packages/brand, and tools/mcp-flykten
+1. THE Build_System SHALL organize code into workspaces: apps/web, packages/content, and packages/brand
 2. WHEN a developer runs "pnpm install", THE Build_System SHALL install all dependencies for all workspaces
 3. WHEN a developer runs "pnpm dev", THE Build_System SHALL start the development server for Web_App
 4. THE Build_System SHALL enable workspace dependencies between packages
@@ -188,17 +187,11 @@ Målet är ett långsiktigt arkiv lika mycket som en hemsida.
 
 ---
 
-## Requirement 12: MCP Server Preparation
+## Requirement 12: ~~MCP Server Preparation~~ (Avvecklad)
 
-**User Story:** Som bandmedlem vill jag förbereda för AI-assisterad content-hantering i framtiden.
+~~**User Story:** Som bandmedlem vill jag förbereda för AI-assisterad content-hantering i framtiden.~~
 
-### Acceptance Criteria
-
-1. THE Monorepo SHALL include tools/mcp-flykten directory
-2. THE MCP_Server SHALL be optional
-3. IF implemented, MCP_Server SHALL read from Content_Package
-4. IF implemented, MCP_Server SHALL write content following existing structure
-5. MCP_Server SHALL validate frontmatter before writing
+*Detta krav har avvecklats. AI-assisterat innehållsarbete sker via Grok Bot istället för en dedikerad MCP-server.*
 
 ---
 
