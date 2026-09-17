@@ -8,7 +8,7 @@ alwaysApply: false
 
 - **Plats:** Allt innehåll i `packages/content/`. Webbappen läser via Astro Content Collections (ingen duplicering).
 - **Bio:** `press/bio.short.md`, `press/bio.medium.md`, `press/bio.long.md` med frontmatter `title`.
-- **Releases:** `releases/[slug]/release.md` med t.ex. `title`, `type`, `releaseDate`, `cover`, `links` (spotify, youtube), `tracks` (array med `title`).
+- **Releases:** `releases/[slug].md` med t.ex. `title`, `type`, `releaseDate`, `cover`, `links` (spotify, youtube), `tracks` (array med `title`).
 - **Gigs:** `gigs/gigs.md` – rubriker med datum och plats (t.ex. `## 2026-03-10 – Debaser, Stockholm`). Sortering vid build.
 - **Kontakt:** `contact.md` med frontmatter `email`, `booking`; övrigt i body.
 - UTF-8, konsekvent frontmatter. Inga extra fält (wordCount, lastUpdated) – git hanterar historik. Vid ogiltig frontmatter ska build faila.

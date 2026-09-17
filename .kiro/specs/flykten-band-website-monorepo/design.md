@@ -61,9 +61,6 @@ flykten/
       tokens.css
       retro.css
 
-  tools/
-    mcp-flykten/ (optional)
-
   pnpm-workspace.yaml
   package.json
 
@@ -227,19 +224,6 @@ Det finns ingen annan pipeline.
 - Skip-to-content länk
 
 Ingen komplex ARIA-arkitektur.
-
-
-## MCP (Optional)
-
-tools/mcp-flykten/ är för framtida automation.
-
-Den får:
-- Läsa markdown
-- Skriva markdown
-- Validera enkel struktur
-
-Den är inte nödvändig för webbplatsen.
-Om den tas bort ska allt fortfarande fungera.
 
 
 ## What This Project Is Not

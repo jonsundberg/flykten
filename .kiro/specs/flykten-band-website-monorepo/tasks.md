@@ -32,7 +32,7 @@ Fokus är på enkelhet: använd Astro's inbyggda funktioner, undvik abstraktione
   - Säkerställ att en tom startsida renderar
   - _Requirements: 3.5, 10.1, 10.2, 10.4, 11.1, 11.6_
 
-- [ ] 4. Implementera sidor
+- [x] 4. Implementera sidor
   - Skapa / (startsida)
   - Skapa /music
   - Skapa /live
@@ -41,7 +41,7 @@ Fokus är på enkelhet: använd Astro's inbyggda funktioner, undvik abstraktione
   - Använd Astro Content Collections, inga custom loaders
   - _Requirements: 5.1-5.6, 6.1-6.4, 7.1-7.4, 8.1-8.4, 9.1-9.4, 13.1, 13.2, 13.3_
 
-- [ ] 5. Styling
+- [x] 5. Styling
   - Skapa tokens.css
   - Skapa retro.css
   - Applicera retro layout på startsidan
@@ -62,15 +62,13 @@ Fokus är på enkelhet: använd Astro's inbyggda funktioner, undvik abstraktione
   - Testa lokalt via preview
   - _Requirements: 14.1, 14.2, 14.3, 14.6, 15.1, 15.2, 15.3, 15.4, 15.5_
 
-- [ ]* 8. Optional
-  - Skapa tools/mcp-flykten
-  - Lägg in enkel README
-  - _Requirements: 12.1, 12.2, 12.3, 12.4, 12.5_
+- [~] 8. ~~Optional: MCP-server~~ (avvecklad)
+  - ~~Skapa tools/mcp-flykten~~
+  - ~~Lägg in enkel README~~
+  - _Avvecklad till förmån för Grok Bot-baserat innehållsarbete._
 
 ## Notes
 
-- Tasks markerade med `*` är optional och kan skippas för snabbare MVP
 - Fokus är på enkelhet: använd Astro's inbyggda funktioner där möjligt
 - Content ska vara primärt, design sekundärt
-- MCP-servern är helt optional och blockerar inte huvudimplementationen
 - Alla content-ändringar ska reflekteras efter rebuild (hot reload i dev)
