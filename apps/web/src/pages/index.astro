@@ -33,9 +33,13 @@ while ((match = gigRegex.exec(gigsBody)) !== null) {
   gigs.push({ date: match[1], venue: match[2] });
 }
 
+// Build-time categorization serves as SSG fallback; client-side JS re-categorizes at runtime
 const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Stockholm' });
 const upcoming = gigs.filter((g) => g.date >= today).sort((a, b) => a.date.localeCompare(b.date));
 const nextGig = upcoming.length > 0 ? upcoming[0] : null;
+
+// Pass all gigs to client as JSON for runtime re-evaluation
+const gigsJson = JSON.stringify(gigs);
 ---
 
 <BaseLayout
@@ -100,19 +104,67 @@ const nextGig = upcoming.length > 0 ? upcoming[0] : null;
 
     <section class="section section--gig" aria-labelledby="gig-heading">
       <h2 id="gig-heading" class="section__heading">Nästa spelning</h2>
-      {nextGig ? (
-        <div class="gig-preview">
-          <p class="gig-preview__date">{nextGig.date}</p>
-          <p class="gig-preview__venue">{nextGig.venue}</p>
-          <a href="/live" class="gig-preview__link">Se alla spelningar →</a>
-        </div>
-      ) : (
-        <p class="section__fallback">
-          Inga kommande spelningar just nu. <a href="/live">Se tidigare spelningar</a>
-        </p>
-      )}
+      <div id="next-gig-container">
+        {nextGig ? (
+          <div class="gig-preview" id="gig-preview" data-gig-date={nextGig.date}>
+            <p class="gig-preview__date" id="gig-date">{nextGig.date}</p>
+            <p class="gig-preview__venue" id="gig-venue">{nextGig.venue}</p>
+            <a href="/live" class="gig-preview__link">Se alla spelningar →</a>
+          </div>
+        ) : (
+          <p class="section__fallback" id="no-gig-fallback">
+            Inga kommande spelningar just nu. <a href="/live">Se tidigare spelningar</a>
+          </p>
+        )}
+      </div>
     </section>
   </div>
+
+  <script define:vars={{ gigsJson }}>
+    (function() {
+      const gigs = JSON.parse(gigsJson);
+      const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Stockholm' });
+      const upcoming = gigs.filter(g => g.date >= today).sort((a, b) => a.date.localeCompare(b.date));
+      const nextGig = upcoming.length > 0 ? upcoming[0] : null;
+
+      const container = document.getElementById('next-gig-container');
+      if (!container) return;
+
+      const currentPreview = document.getElementById('gig-preview');
+      const currentFallback = document.getElementById('no-gig-fallback');
+
+      if (nextGig) {
+        if (currentPreview) {
+          const dateEl = document.getElementById('gig-date');
+          const venueEl = document.getElementById('gig-venue');
+          if (dateEl) dateEl.textContent = nextGig.date;
+          if (venueEl) venueEl.textContent = nextGig.venue;
+          currentPreview.setAttribute('data-gig-date', nextGig.date);
+          currentPreview.style.display = '';
+        } else {
+          container.innerHTML = `
+            <div class="gig-preview" id="gig-preview" data-gig-date="${nextGig.date}">
+              <p class="gig-preview__date" id="gig-date">${nextGig.date}</p>
+              <p class="gig-preview__venue" id="gig-venue">${nextGig.venue}</p>
+              <a href="/live" class="gig-preview__link">Se alla spelningar →</a>
+            </div>
+          `;
+        }
+        if (currentFallback) currentFallback.style.display = 'none';
+      } else {
+        if (currentPreview) currentPreview.style.display = 'none';
+        if (currentFallback) {
+          currentFallback.style.display = '';
+        } else {
+          container.innerHTML = `
+            <p class="section__fallback" id="no-gig-fallback">
+              Inga kommande spelningar just nu. <a href="/live">Se tidigare spelningar</a>
+            </p>
+          `;
+        }
+      }
+    })();
+  </script>
 
   <style>
     .home {

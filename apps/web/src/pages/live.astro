@@ -45,6 +45,7 @@ matches.forEach((match, i) => {
   });
 });
 
+// Build-time categorization serves as SSG fallback; client-side JS re-categorizes at runtime
 const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Stockholm' });
 const upcoming = gigs.filter((g) => g.date >= today).sort((a, b) => a.date.localeCompare(b.date));
 const past = gigs.filter((g) => g.date < today).sort((a, b) => b.date.localeCompare(a.date));
@@ -56,51 +57,83 @@ const past = gigs.filter((g) => g.date < today).sort((a, b) => b.date.localeComp
 >
   <h1 class="page-title">Live</h1>
 
-  <section>
+  <section id="upcoming-section">
     <h2>Kommande spelningar</h2>
-    {upcoming.length === 0 ? (
-      <p>Inga kommande spelningar just nu. Håll utkik.</p>
-    ) : (
-      <div class="gigs">
-        {upcoming.map((gig) => (
-          <article class={`gig section-card ${gig.imageHtml ? 'gig-with-image' : ''}`}>
-            <h3>{gig.date} – {gig.venue}</h3>
-            {gig.imageHtml ? (
-              <div class="gig-grid">
-                <div class="gig-poster" set:html={gig.imageHtml} />
-                <div class="gig-body" set:html={marked.parse(gig.bodyHtml) as string} />
-              </div>
-            ) : (
-              <div class="gig-body" set:html={marked.parse(gig.content) as string} />
-            )}
-          </article>
-        ))}
-      </div>
-    )}
+    <p class="empty-message" style={upcoming.length > 0 ? 'display:none' : ''}>Inga kommande spelningar just nu. Håll utkik.</p>
+    <div class="gigs" id="upcoming-gigs">
+      {upcoming.map((gig) => (
+        <article class={`gig section-card ${gig.imageHtml ? 'gig-with-image' : ''}`} data-gig-date={gig.date}>
+          <h3>{gig.date} – {gig.venue}</h3>
+          {gig.imageHtml ? (
+            <div class="gig-grid">
+              <div class="gig-poster" set:html={gig.imageHtml} />
+              <div class="gig-body" set:html={marked.parse(gig.bodyHtml) as string} />
+            </div>
+          ) : (
+            <div class="gig-body" set:html={marked.parse(gig.content) as string} />
+          )}
+        </article>
+      ))}
+    </div>
   </section>
 
-  <section>
+  <section id="past-section">
     <h2>Tidigare spelningar</h2>
-    {past.length === 0 ? (
-      <p>Inga tidigare spelningar ännu.</p>
-    ) : (
-      <div class="gigs">
-        {past.map((gig) => (
-          <article class={`gig section-card ${gig.imageHtml ? 'gig-with-image' : ''}`}>
-            <h3>{gig.date} – {gig.venue}</h3>
-            {gig.imageHtml ? (
-              <div class="gig-grid">
-                <div class="gig-poster" set:html={gig.imageHtml} />
-                <div class="gig-body" set:html={marked.parse(gig.bodyHtml) as string} />
-              </div>
-            ) : (
-              <div class="gig-body" set:html={marked.parse(gig.content) as string} />
-            )}
-          </article>
-        ))}
-      </div>
-    )}
+    <p class="empty-message" style={past.length > 0 ? 'display:none' : ''}>Inga tidigare spelningar ännu.</p>
+    <div class="gigs" id="past-gigs">
+      {past.map((gig) => (
+        <article class={`gig section-card ${gig.imageHtml ? 'gig-with-image' : ''}`} data-gig-date={gig.date}>
+          <h3>{gig.date} – {gig.venue}</h3>
+          {gig.imageHtml ? (
+            <div class="gig-grid">
+              <div class="gig-poster" set:html={gig.imageHtml} />
+              <div class="gig-body" set:html={marked.parse(gig.bodyHtml) as string} />
+            </div>
+          ) : (
+            <div class="gig-body" set:html={marked.parse(gig.content) as string} />
+          )}
+        </article>
+      ))}
+    </div>
   </section>
+
+  <script>
+    (function() {
+      const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Stockholm' });
+      const upcomingContainer = document.getElementById('upcoming-gigs');
+      const pastContainer = document.getElementById('past-gigs');
+      const upcomingSection = document.getElementById('upcoming-section');
+      const pastSection = document.getElementById('past-section');
+      if (!upcomingContainer || !pastContainer || !upcomingSection || !pastSection) return;
+
+      const allGigs = [...document.querySelectorAll('[data-gig-date]')];
+      const upcoming: Element[] = [];
+      const past: Element[] = [];
+
+      allGigs.forEach(gig => {
+        const date = gig.getAttribute('data-gig-date') || '';
+        if (date >= today) {
+          upcoming.push(gig);
+        } else {
+          past.push(gig);
+        }
+      });
+
+      upcoming.sort((a, b) => (a.getAttribute('data-gig-date') || '').localeCompare(b.getAttribute('data-gig-date') || ''));
+      past.sort((a, b) => (b.getAttribute('data-gig-date') || '').localeCompare(a.getAttribute('data-gig-date') || ''));
+
+      upcomingContainer.innerHTML = '';
+      pastContainer.innerHTML = '';
+
+      upcoming.forEach(gig => upcomingContainer.appendChild(gig));
+      past.forEach(gig => pastContainer.appendChild(gig));
+
+      const upcomingEmpty = upcomingSection.querySelector('.empty-message') as HTMLElement | null;
+      const pastEmpty = pastSection.querySelector('.empty-message') as HTMLElement | null;
+      if (upcomingEmpty) upcomingEmpty.style.display = upcoming.length === 0 ? '' : 'none';
+      if (pastEmpty) pastEmpty.style.display = past.length === 0 ? '' : 'none';
+    })();
+  </script>
 
   <style>
     section {
@@ -146,6 +179,10 @@ const past = gigs.filter((g) => g.date < today).sort((a, b) => b.date.localeComp
       .gig-grid {
         grid-template-columns: 1fr;
       }
+    }
+
+    .empty-message {
+      color: var(--text-muted);
     }
   </style>
 </BaseLayout>
